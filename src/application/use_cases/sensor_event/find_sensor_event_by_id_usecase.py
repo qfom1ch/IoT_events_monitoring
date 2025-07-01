@@ -22,9 +22,3 @@ class FindSensorEventByIdUseCaseImpl(FindSensorEventByIdUseCase):
         if not sensor_event:
             raise SensorEventNotFoundError
         return sensor_event
-
-
-def new_find_sensor_event_by_id_usecase(
-    sensor_event_repository: SensorEventRepository,
-) -> FindSensorEventByIdUseCase:
-    return FindSensorEventByIdUseCaseImpl(sensor_event_repository)

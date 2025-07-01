@@ -1,6 +1,7 @@
 from uuid import UUID
 
-from fastapi import Depends, FastAPI, HTTPException, status
+from dishka.integrations.fastapi import FromDishka, inject
+from fastapi import FastAPI, HTTPException, status
 
 from src.application.use_cases.devices.create_device_usecase import CreateDeviceUseCase
 from src.application.use_cases.devices.delete_device_usecase import DeleteDeviceUseCase
@@ -8,12 +9,6 @@ from src.application.use_cases.devices.find_device_by_id_usecase import FindDevi
 from src.application.use_cases.devices.update_device_usecase import UpdateDeviceUseCase
 from src.domain.devices.exceptions.device_not_found_error import DeviceNotFoundError
 from src.domain.devices.value_objects.device_id import DeviceId
-from src.infrastructure.di.device_injection import (
-    get_create_device_usecase,
-    get_delete_device_usecase,
-    get_find_device_by_id_usecase,
-    get_update_device_usecase,
-)
 from src.presentation.api.devices.error_messages.device_not_found_error_message import (
     ErrorMessageDeviceNotFound,
 )
@@ -31,9 +26,9 @@ class DeviceApiRouteHandler:
             responses={status.HTTP_404_NOT_FOUND: {'model': ErrorMessageDeviceNotFound}},
             tags=['devices'],
         )
+        @inject
         async def get_device(
-            device_id: UUID,
-            usecase: FindDeviceByIdUseCase = Depends(get_find_device_by_id_usecase),
+            device_id: UUID, usecase: FromDishka[FindDeviceByIdUseCase]
         ) -> DeviceSchema:
             uuid = DeviceId(device_id)
             try:
@@ -53,9 +48,9 @@ class DeviceApiRouteHandler:
             responses={status.HTTP_400_BAD_REQUEST: {}},
             tags=['devices'],
         )
+        @inject
         async def create_device(
-            data: DeviceCreateSchema,
-            usecase: CreateDeviceUseCase = Depends(get_create_device_usecase),
+            data: DeviceCreateSchema, usecase: FromDishka[CreateDeviceUseCase]
         ) -> DeviceSchema:
             try:
                 device = await usecase.execute(data.name, data.location, data.sensor_type)
@@ -71,10 +66,9 @@ class DeviceApiRouteHandler:
             responses={status.HTTP_404_NOT_FOUND: {'model': ErrorMessageDeviceNotFound}},
             tags=['devices'],
         )
+        @inject
         async def update_device(
-            device_id: UUID,
-            data: DeviceUpdateSchema,
-            usecase: UpdateDeviceUseCase = Depends(get_update_device_usecase),
+            device_id: UUID, data: DeviceUpdateSchema, usecase: FromDishka[UpdateDeviceUseCase]
         ) -> DeviceSchema:
             _id = DeviceId(device_id)
 
@@ -95,8 +89,9 @@ class DeviceApiRouteHandler:
             responses={status.HTTP_404_NOT_FOUND: {'model': ErrorMessageDeviceNotFound}},
             tags=['devices'],
         )
+        @inject
         async def delete_device(
-            device_id: UUID, usecase: DeleteDeviceUseCase = Depends(get_delete_device_usecase)
+            device_id: UUID, usecase: FromDishka[DeleteDeviceUseCase]
         ) -> None:
             _id = DeviceId(device_id)
 

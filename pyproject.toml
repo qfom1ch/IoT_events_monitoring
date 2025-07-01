@@ -7,7 +7,9 @@ requires-python = ">=3.12"
 
 
 dependencies = [
+    "aiokafka>=0.12.0",
     "beanie>=1.29.0",
+    "dishka[fastapi]>=1.6.0",
     "fastapi>=0.115.12",
     "motor>=3.7.1",
     "pydantic-settings>=2.9.1",

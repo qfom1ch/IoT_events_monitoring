@@ -28,7 +28,3 @@ class MongoDeviceRepository(DeviceRepository):
         device_db = await DeviceDB.get(device_id.value)
         if device_db:
             await device_db.delete()
-
-
-def mongo_device_repository() -> DeviceRepository:
-    return MongoDeviceRepository()

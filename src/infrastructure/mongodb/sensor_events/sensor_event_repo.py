@@ -14,7 +14,3 @@ class MongoSensorEventRepository(SensorEventRepository):
     async def save(self, sensor_event: SensorEvent) -> None:
         device_db = SensorEventDB.from_domain(sensor_event)
         await device_db.insert()
-
-
-def mongo_sensor_event_repository() -> SensorEventRepository:
-    return MongoSensorEventRepository()

@@ -21,7 +21,3 @@ class DeleteDeviceUseCaseImpl(DeleteDeviceUseCase):
             raise DeviceNotFoundError
 
         await self.repository.delete(device_id)
-
-
-def new_delete_device_usecase(device_repository: DeviceRepository) -> DeleteDeviceUseCase:
-    return DeleteDeviceUseCaseImpl(device_repository)

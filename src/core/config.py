@@ -27,6 +27,12 @@ class Settings(BaseSettings):
 
     ELASTICSEARCH_HOSTS: str | None = os.environ.get('ELASTICSEARCH_HOSTS')
 
+    KAFKA_BOOTSTRAP_SERVERS: str = os.environ.get('KAFKA_BOOTSTRAP_SERVERS', 'localhost:9092')
+    KAFKA_TOPIC_SENSOR_EVENTS: str = os.environ.get(
+        'KAFKA_TOPIC_SENSOR_EVENTS', 'sensor_events'
+    )
+    KAFKA_GROUP_ID: str = os.environ.get('KAFKA_GROUP_ID', 'sensor-event-group')
+
     model_config = SettingsConfigDict(env_file='.env', case_sensitive=False, extra='ignore')
 
 

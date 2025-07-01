@@ -1,6 +1,7 @@
 from uuid import UUID
 
-from fastapi import Depends, FastAPI, HTTPException, status
+from dishka.integrations.fastapi import FromDishka, inject
+from fastapi import FastAPI, HTTPException, status
 
 from src.application.use_cases.sensor_event.create_sensor_event_usecase import (
     CreateSensorEventUseCase,
@@ -12,10 +13,6 @@ from src.domain.sensor_events.exceptions.sensor_event_not_found_error import (
     SensorEventNotFoundError,
 )
 from src.domain.sensor_events.value_objects.sensor_event_id import SensorEventId
-from src.infrastructure.di.sensor_event_injection import (
-    get_create_sensor_event_usecase,
-    get_find_sensor_event_by_id_usecase,
-)
 from src.presentation.api.sensor_events.error_messages.sensor_event_not_found_error_message import (  # noqa: E501
     ErrorMessageSensorEventNotFound,
 )
@@ -34,9 +31,9 @@ class SensorEventApiRouteHandler:
             responses={status.HTTP_404_NOT_FOUND: {'model': ErrorMessageSensorEventNotFound}},
             tags=['sensor_events'],
         )
+        @inject
         async def get_sensor_event(
-            sensor_event_id: UUID,
-            usecase: FindSensorEventByIdUseCase = Depends(get_find_sensor_event_by_id_usecase),
+            sensor_event_id: UUID, usecase: FromDishka[FindSensorEventByIdUseCase]
         ) -> SensorEventSchema:
             uuid = SensorEventId(sensor_event_id)
             try:
@@ -56,9 +53,9 @@ class SensorEventApiRouteHandler:
             responses={status.HTTP_400_BAD_REQUEST: {}},
             tags=['sensor_events'],
         )
+        @inject
         async def create_sensor_event(
-            data: SensorEventCreateSchema,
-            usecase: CreateSensorEventUseCase = Depends(get_create_sensor_event_usecase),
+            data: SensorEventCreateSchema, usecase: FromDishka[CreateSensorEventUseCase]
         ) -> SensorEventSchema:
             try:
                 sensor_event = await usecase.execute(

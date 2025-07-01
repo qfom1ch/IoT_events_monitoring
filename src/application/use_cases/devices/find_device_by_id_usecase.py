@@ -20,7 +20,3 @@ class FindDeviceByIdUseCaseImpl(FindDeviceByIdUseCase):
         if not device:
             raise DeviceNotFoundError
         return device
-
-
-def new_find_device_by_id_usecase(device_repository: DeviceRepository) -> FindDeviceByIdUseCase:
-    return FindDeviceByIdUseCaseImpl(device_repository)

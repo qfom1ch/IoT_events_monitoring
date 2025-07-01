@@ -1,15 +1,12 @@
 from uuid import UUID
 
-from fastapi import Depends, FastAPI, HTTPException, status
+from dishka.integrations.fastapi import FromDishka, inject
+from fastapi import FastAPI, HTTPException, status
 
 from src.application.use_cases.alerts.create_alert_usecase import CreateAlertUseCase
 from src.application.use_cases.alerts.find_alert_by_id_usecase import FindAlertByIdUseCase
 from src.domain.alerts.exceptions.alert_not_found_error import AlertNotFoundError
 from src.domain.alerts.value_objects.alert_id import AlertId
-from src.infrastructure.di.alert_injection import (
-    get_create_alert_usecase,
-    get_find_alert_by_id_usecase,
-)
 from src.presentation.api.alerts.error_messages.alert_not_found_error_message import (
     ErrorMessageAlertNotFound,
 )
@@ -26,9 +23,9 @@ class AlertApiRouteHandler:
             responses={status.HTTP_404_NOT_FOUND: {'model': ErrorMessageAlertNotFound}},
             tags=['alerts'],
         )
+        @inject
         async def get_alert(
-            alert_id: UUID,
-            usecase: FindAlertByIdUseCase = Depends(get_find_alert_by_id_usecase),
+            alert_id: UUID, usecase: FromDishka[FindAlertByIdUseCase]
         ) -> AlertSchema:
             uuid = AlertId(alert_id)
             try:
@@ -48,9 +45,9 @@ class AlertApiRouteHandler:
             responses={status.HTTP_400_BAD_REQUEST: {}},
             tags=['alerts'],
         )
+        @inject
         async def create_alert(
-            data: AlertCreateSchema,
-            usecase: CreateAlertUseCase = Depends(get_create_alert_usecase),
+            data: AlertCreateSchema, usecase: FromDishka[CreateAlertUseCase]
         ) -> AlertSchema:
             try:
                 alert = await usecase.execute(

@@ -20,7 +20,3 @@ class FindAlertByIdUseCaseImpl(FindAlertByIdUseCase):
         if not alert:
             raise AlertNotFoundError
         return alert
-
-
-def new_find_alert_by_id_usecase(alert_repository: AlertRepository) -> FindAlertByIdUseCase:
-    return FindAlertByIdUseCaseImpl(alert_repository)

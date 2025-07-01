@@ -34,9 +34,3 @@ class CreateSensorEventUseCaseImpl(CreateSensorEventUseCase):
         )
         await self.repository.save(sensor_event)
         return sensor_event
-
-
-def new_create_sensor_event_usecase(
-    sensor_event_repository: SensorEventRepository,
-) -> CreateSensorEventUseCase:
-    return CreateSensorEventUseCaseImpl(sensor_event_repository)

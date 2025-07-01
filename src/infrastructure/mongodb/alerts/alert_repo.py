@@ -14,7 +14,3 @@ class MongoAlertRepository(AlertRepository):
     async def save(self, alert: Alert) -> None:
         alert_db = AlertDB.from_domain(alert)
         await alert_db.insert()
-
-
-def mongo_alert_repository() -> AlertRepository:
-    return MongoAlertRepository()

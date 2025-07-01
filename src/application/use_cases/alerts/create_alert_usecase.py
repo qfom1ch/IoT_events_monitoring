@@ -24,7 +24,3 @@ class CreateAlertUseCaseImpl(CreateAlertUseCase):
         )
         await self.repository.save(alert)
         return alert
-
-
-def new_create_alert_usecase(alert_repository: AlertRepository) -> CreateAlertUseCaseImpl:
-    return CreateAlertUseCaseImpl(alert_repository)

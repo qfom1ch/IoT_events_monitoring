@@ -3,11 +3,12 @@ from contextlib import asynccontextmanager
 from typing import Any
 
 import uvicorn
+from dishka.integrations.fastapi import setup_dishka
 from fastapi import FastAPI
 
 from src.core.config import settings
+from src.infrastructure.di.container import create_container
 from src.infrastructure.mongodb import init_mongo
-from src.infrastructure.mongodb.database import close_db_connection, connect_and_init_db
 from src.presentation.api.alerts.handlers.alert_api_route_handler import AlertApiRouteHandler
 from src.presentation.api.devices.handlers.device_api_route_handler import DeviceApiRouteHandler
 from src.presentation.api.sensor_events.handlers.sensor_event_api_route_handler import (
@@ -17,10 +18,9 @@ from src.presentation.api.sensor_events.handlers.sensor_event_api_route_handler 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncGenerator[None, Any]:
-    await connect_and_init_db()
-    await init_mongo()
+    client = await init_mongo()
     yield
-    await close_db_connection()
+    client.close()
 
 
 app = FastAPI(
@@ -30,6 +30,10 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
+container = create_container()
+setup_dishka(container=container, app=app)
+
+# Routers
 device_route_handler = DeviceApiRouteHandler()
 device_route_handler.register_routes(app)
 

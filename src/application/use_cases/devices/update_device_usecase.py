@@ -45,7 +45,3 @@ class UpdateDeviceUseCaseImpl(UpdateDeviceUseCase):
         await self.repository.update(device)
 
         return device
-
-
-def new_update_device_usecase(device_repository: DeviceRepository) -> UpdateDeviceUseCase:
-    return UpdateDeviceUseCaseImpl(device_repository)

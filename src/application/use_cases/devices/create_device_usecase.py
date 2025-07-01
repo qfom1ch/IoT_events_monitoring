@@ -18,7 +18,3 @@ class CreateDeviceUseCaseImpl(CreateDeviceUseCase):
         device = Device.create(name=name, location=location, sensor_type=sensor_type)
         await self.repository.save(device)
         return device
-
-
-def new_create_device_usecase(device_repository: DeviceRepository) -> CreateDeviceUseCase:
-    return CreateDeviceUseCaseImpl(device_repository)
