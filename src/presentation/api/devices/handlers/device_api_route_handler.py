@@ -7,6 +7,7 @@ from src.application.use_cases.devices.create_device_usecase import CreateDevice
 from src.application.use_cases.devices.delete_device_usecase import DeleteDeviceUseCase
 from src.application.use_cases.devices.find_device_by_id_usecase import FindDeviceByIdUseCase
 from src.application.use_cases.devices.update_device_usecase import UpdateDeviceUseCase
+from src.core.logging_config import setup_logging
 from src.domain.devices.exceptions.device_not_found_error import DeviceNotFoundError
 from src.domain.devices.value_objects.device_id import DeviceId
 from src.presentation.api.devices.error_messages.device_not_found_error_message import (
@@ -15,9 +16,9 @@ from src.presentation.api.devices.error_messages.device_not_found_error_message 
 from src.presentation.api.devices.schemas.device_create_schema import DeviceCreateSchema
 from src.presentation.api.devices.schemas.device_schema import DeviceSchema
 from src.presentation.api.devices.schemas.device_update_schema import DeviceUpdateSchema
-from src.core.logging_config import setup_logging
 
 logger = setup_logging()
+
 
 class DeviceApiRouteHandler:
     def register_routes(self, app: FastAPI) -> None:
@@ -38,8 +39,7 @@ class DeviceApiRouteHandler:
             except DeviceNotFoundError as e:
                 logger.error(
                     'Device get failed',
-                    extra={
-                        'extra': {'error': str(e), 'device_id': device_id}}
+                    extra={'extra': {'error': str(e), 'device_id': device_id}},
                 )
                 raise HTTPException(
                     status_code=status.HTTP_404_NOT_FOUND, detail=e.message
@@ -47,15 +47,11 @@ class DeviceApiRouteHandler:
             except Exception as e:
                 logger.error(
                     'Device get failed',
-                    extra={
-                        'extra': {'error': str(e), 'device_id': device_id}}
+                    extra={'extra': {'error': str(e), 'device_id': device_id}},
                 )
                 raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR) from e
 
-            logger.info(
-                'Device get success',
-                extra={'extra': {'device_id': str(device.id)}}
-            )
+            logger.info('Device get success', extra={'extra': {'device_id': str(device.id)}})
             return DeviceSchema.from_entity(device)
 
         @app.post(
@@ -74,15 +70,11 @@ class DeviceApiRouteHandler:
             except Exception as e:
                 logger.error(
                     'Device create failed',
-                    extra={
-                        'extra': {'error': str(e), 'data': data.model_dump_json()}}
+                    extra={'extra': {'error': str(e), 'data': data.model_dump_json()}},
                 )
                 raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR) from e
 
-            logger.info(
-                'Device create success',
-                extra={'extra': {'device_id': str(device.id)}}
-            )
+            logger.info('Device create success', extra={'extra': {'device_id': str(device.id)}})
             return DeviceSchema.from_entity(device)
 
         @app.put(
@@ -104,7 +96,12 @@ class DeviceApiRouteHandler:
                 logger.error(
                     'Device update failed',
                     extra={
-                        'extra': {'error': str(e), 'device_id': device_id, 'data': data.model_dump_json()}}
+                        'extra': {
+                            'error': str(e),
+                            'device_id': device_id,
+                            'data': data.model_dump_json(),
+                        }
+                    },
                 )
                 raise HTTPException(
                     status_code=status.HTTP_404_NOT_FOUND, detail=e.message
@@ -113,14 +110,16 @@ class DeviceApiRouteHandler:
                 logger.error(
                     'Device update failed',
                     extra={
-                        'extra': {'error': str(e), 'device_id': device_id, 'data': data.model_dump_json()}}
+                        'extra': {
+                            'error': str(e),
+                            'device_id': device_id,
+                            'data': data.model_dump_json(),
+                        }
+                    },
                 )
                 raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR) from e
 
-            logger.info(
-                'Device update success',
-                extra={'extra': {'device_id': str(device.id)}}
-            )
+            logger.info('Device update success', extra={'extra': {'device_id': str(device.id)}})
             return DeviceSchema.from_entity(device)
 
         @app.delete(
@@ -140,8 +139,7 @@ class DeviceApiRouteHandler:
             except DeviceNotFoundError as e:
                 logger.error(
                     'Device delete failed',
-                    extra={
-                        'extra': {'error': str(e), 'device_id': device_id}}
+                    extra={'extra': {'error': str(e), 'device_id': device_id}},
                 )
                 raise HTTPException(
                     status_code=status.HTTP_404_NOT_FOUND, detail=e.message
@@ -149,12 +147,8 @@ class DeviceApiRouteHandler:
             except Exception as e:
                 logger.error(
                     'Device delete failed',
-                    extra={
-                        'extra': {'error': str(e), 'device_id': device_id}}
+                    extra={'extra': {'error': str(e), 'device_id': device_id}},
                 )
                 raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR) from e
 
-            logger.info(
-                'Device delete success',
-                extra={'extra': {'device_id': device_id}}
-            )
+            logger.info('Device delete success', extra={'extra': {'device_id': device_id}})

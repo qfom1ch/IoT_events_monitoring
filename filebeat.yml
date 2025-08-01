@@ -1,0 +1,18 @@
+filebeat.inputs:
+  - type: log
+    paths:
+      - /logs/*.log
+    json.keys_under_root: true
+    json.add_error_key: true
+    fields:
+      log_type: python_app
+
+setup.template.name: 'logs-iot-monitoring'
+setup.template.pattern: 'logs-iot-monitoring-*'
+
+output.elasticsearch:
+  hosts: ['http://elasticsearch:9200']
+  index: 'logs-iot-monitoring-%{+yyyy.MM.dd}'
+
+logging.level: info
+logging.to_stderr: true

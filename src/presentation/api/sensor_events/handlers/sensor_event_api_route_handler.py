@@ -9,6 +9,7 @@ from src.application.use_cases.sensor_event.create_sensor_event_usecase import (
 from src.application.use_cases.sensor_event.find_sensor_event_by_id_usecase import (
     FindSensorEventByIdUseCase,
 )
+from src.core.logging_config import setup_logging
 from src.domain.sensor_events.exceptions.sensor_event_not_found_error import (
     SensorEventNotFoundError,
 )
@@ -20,9 +21,9 @@ from src.presentation.api.sensor_events.schemas.sensor_event_create_schema impor
     SensorEventCreateSchema,
 )
 from src.presentation.api.sensor_events.schemas.sensor_event_schema import SensorEventSchema
-from src.core.logging_config import setup_logging
 
 logger = setup_logging()
+
 
 class SensorEventApiRouteHandler:
     def register_routes(self, app: FastAPI) -> None:
@@ -43,8 +44,7 @@ class SensorEventApiRouteHandler:
             except SensorEventNotFoundError as e:
                 logger.error(
                     'Sensor event get failed',
-                    extra={
-                        'extra': {'error': str(e), 'sensor_event_id': sensor_event_id}}
+                    extra={'extra': {'error': str(e), 'sensor_event_id': sensor_event_id}},
                 )
                 raise HTTPException(
                     status_code=status.HTTP_404_NOT_FOUND, detail=e.message
@@ -52,14 +52,12 @@ class SensorEventApiRouteHandler:
             except Exception as e:
                 logger.error(
                     'Sensor event get failed',
-                    extra={
-                        'extra': {'error': str(e), 'sensor_event_id': sensor_event_id}}
+                    extra={'extra': {'error': str(e), 'sensor_event_id': sensor_event_id}},
                 )
                 raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR) from e
 
             logger.info(
-                'Sensor event get success',
-                extra={'extra': {'device_id': str(sensor_event.id)}}
+                'Sensor event get success', extra={'extra': {'device_id': str(sensor_event.id)}}
             )
             return SensorEventSchema.from_entity(sensor_event)
 
@@ -81,13 +79,12 @@ class SensorEventApiRouteHandler:
             except Exception as e:
                 logger.error(
                     'Sensor event create failed',
-                    extra={
-                        'extra': {'error': str(e), 'data': data.model_dump_json()}}
+                    extra={'extra': {'error': str(e), 'data': data.model_dump_json()}},
                 )
                 raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR) from e
 
             logger.info(
                 'Sensor event create success',
-                extra={'extra': {'device_id': str(sensor_event.id)}}
+                extra={'extra': {'device_id': str(sensor_event.id)}},
             )
             return SensorEventSchema.from_entity(sensor_event)

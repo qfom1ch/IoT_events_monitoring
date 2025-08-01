@@ -62,6 +62,19 @@ services:
     networks:
       - app-network
 
+  filebeat:
+    image: docker.io/elastic/filebeat:8.11.3
+    user: root
+    command: ["filebeat", "-e", "-strict.perms=false"]
+    volumes:
+      - ./filebeat.yml:/usr/share/filebeat/filebeat.yml
+      - ./logs:/logs:ro
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+    depends_on:
+      - elasticsearch
+    networks:
+      - app-network
 
 volumes:
   mongo_data:

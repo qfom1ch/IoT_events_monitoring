@@ -7,6 +7,7 @@ from fastapi import FastAPI, HTTPException, Query, status
 from src.application.use_cases.alerts.create_alert_usecase import CreateAlertUseCase
 from src.application.use_cases.alerts.find_alert_by_id_usecase import FindAlertByIdUseCase
 from src.application.use_cases.alerts.search_alert_usecase import SearchAlertUseCase
+from src.core.logging_config import setup_logging
 from src.domain.alerts.exceptions.alert_not_found_error import AlertNotFoundError
 from src.domain.alerts.value_objects.alert_id import AlertId
 from src.infrastructure.elastic.alerts.schemas import AlertSearchQuery
@@ -15,9 +16,9 @@ from src.presentation.api.alerts.error_messages.alert_not_found_error_message im
 )
 from src.presentation.api.alerts.schemas.alert_create_schema import AlertCreateSchema
 from src.presentation.api.alerts.schemas.alert_schema import AlertSchema
-from src.core.logging_config import setup_logging
 
 logger = setup_logging()
+
 
 class AlertApiRouteHandler:
     def register_routes(self, app: FastAPI) -> None:
@@ -33,15 +34,14 @@ class AlertApiRouteHandler:
             query: Annotated[AlertSearchQuery, Query()], usecase: FromDishka[SearchAlertUseCase]
         ) -> list[AlertSchema]:
             logger.info(
-                'Search for alerts',
-                extra={'extra': {'query': query.model_dump_json()}}
+                'Search for alerts', extra={'extra': {'query': query.model_dump_json()}}
             )
             try:
                 alerts = await usecase.execute(query)
             except Exception as e:
                 logger.info(
                     'Search for alerts failed',
-                    extra={'extra': {'error': str(e), 'query': query.model_dump_json()}}
+                    extra={'extra': {'error': str(e), 'query': query.model_dump_json()}},
                 )
                 raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR) from e
 
@@ -63,9 +63,7 @@ class AlertApiRouteHandler:
                 alert = await usecase.execute(uuid)
             except AlertNotFoundError as e:
                 logger.error(
-                    'Alert get failed',
-                    extra={
-                        'extra': {'error': str(e), 'alert_id': alert_id}}
+                    'Alert get failed', extra={'extra': {'error': str(e), 'alert_id': alert_id}}
                 )
                 raise HTTPException(
                     status_code=status.HTTP_404_NOT_FOUND, detail=e.message
@@ -73,10 +71,10 @@ class AlertApiRouteHandler:
 
             except Exception as exc:
                 raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR) from exc
-            
+
             logger.info(
                 'Alert get success',
-                extra={'extra': {'alert_id': str(alert.id), 'device_id': str(alert.device_id)}}
+                extra={'extra': {'alert_id': str(alert.id), 'device_id': str(alert.device_id)}},
             )
             return AlertSchema.from_entity(alert)
 
@@ -98,13 +96,12 @@ class AlertApiRouteHandler:
             except Exception as e:
                 logger.error(
                     'Alert create failed',
-                    extra={
-                        'extra': {'error': str(e), 'data': data.model_dump_json()}}
+                    extra={'extra': {'error': str(e), 'data': data.model_dump_json()}},
                 )
                 raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR) from e
 
             logger.info(
                 'Alert create success',
-                extra={'extra': {'alert_id': str(alert.id), 'device_id': str(alert.device_id)}}
+                extra={'extra': {'alert_id': str(alert.id), 'device_id': str(alert.device_id)}},
             )
             return AlertSchema.from_entity(alert)
