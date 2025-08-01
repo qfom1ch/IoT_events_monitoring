@@ -1,12 +1,15 @@
+from typing import Annotated
 from uuid import UUID
 
 from dishka.integrations.fastapi import FromDishka, inject
-from fastapi import FastAPI, HTTPException, status
+from fastapi import FastAPI, HTTPException, Query, status
 
 from src.application.use_cases.alerts.create_alert_usecase import CreateAlertUseCase
 from src.application.use_cases.alerts.find_alert_by_id_usecase import FindAlertByIdUseCase
+from src.application.use_cases.alerts.search_alert_usecase import SearchAlertUseCase
 from src.domain.alerts.exceptions.alert_not_found_error import AlertNotFoundError
 from src.domain.alerts.value_objects.alert_id import AlertId
+from src.infrastructure.elastic.alerts.schemas import AlertSearchQuery
 from src.presentation.api.alerts.error_messages.alert_not_found_error_message import (
     ErrorMessageAlertNotFound,
 )
@@ -16,6 +19,24 @@ from src.presentation.api.alerts.schemas.alert_schema import AlertSchema
 
 class AlertApiRouteHandler:
     def register_routes(self, app: FastAPI) -> None:
+        @app.get(
+            '/alerts/search',
+            response_model=list[AlertSchema],
+            status_code=status.HTTP_200_OK,
+            responses={status.HTTP_400_BAD_REQUEST: {}},
+            tags=['alerts'],
+        )
+        @inject
+        async def search_alerts(
+            query: Annotated[AlertSearchQuery, Query()], usecase: FromDishka[SearchAlertUseCase]
+        ) -> list[AlertSchema]:
+            try:
+                alerts = await usecase.execute(query)
+            except Exception as e:
+                raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR) from e
+
+            return [AlertSchema.from_entity(alert) for alert in alerts]
+
         @app.get(
             '/alerts/{alert_id}',
             response_model=AlertSchema,
