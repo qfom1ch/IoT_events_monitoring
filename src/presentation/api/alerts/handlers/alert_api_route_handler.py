@@ -16,6 +16,7 @@ from src.presentation.api.alerts.error_messages.alert_not_found_error_message im
 )
 from src.presentation.api.alerts.schemas.alert_create_schema import AlertCreateSchema
 from src.presentation.api.alerts.schemas.alert_schema import AlertSchema
+from src.monitoring.metrics import ALERTS_GENERATED
 
 logger = setup_logging()
 
@@ -104,4 +105,6 @@ class AlertApiRouteHandler:
                 'Alert create success',
                 extra={'extra': {'alert_id': str(alert.id), 'device_id': str(alert.device_id)}},
             )
+            ALERTS_GENERATED.inc()
+
             return AlertSchema.from_entity(alert)

@@ -14,7 +14,8 @@ from src.presentation.api.devices.handlers.device_api_route_handler import Devic
 from src.presentation.api.sensor_events.handlers.sensor_event_api_route_handler import (
     SensorEventApiRouteHandler,
 )
-
+from src.monitoring.middleware import PrometheusMiddleware
+from src.presentation.api.monitoring.handlers import router as monitoring_router
 
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncGenerator[None, Any]:
@@ -30,6 +31,8 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
+app.add_middleware(PrometheusMiddleware)
+
 container = create_container()
 setup_dishka(container=container, app=app)
 
@@ -43,6 +46,7 @@ alert_route_handler.register_routes(app)
 sensor_event_route_handler = SensorEventApiRouteHandler()
 sensor_event_route_handler.register_routes(app)
 
+app.include_router(monitoring_router)
 
 if __name__ == '__main__':
     uvicorn.run('main:app', host=settings.HTTP_HOST, port=settings.HTTP_PORT, reload=True)

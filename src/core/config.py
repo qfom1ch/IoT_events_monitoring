@@ -7,7 +7,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 class Settings(BaseSettings):
     PROJECT_NAME: str = os.environ.get('PROJECT_NAME', 'UNNAMED PROJECT')
     API_V1_STR: str = '/api/v1'
-    HTTP_HOST: str = '127.0.0.1'
+    HTTP_HOST: str = '0.0.0.0'
     HTTP_PORT: int = 8000
     BACKEND_CORS_ORIGINS: list[AnyHttpUrl] = []
 

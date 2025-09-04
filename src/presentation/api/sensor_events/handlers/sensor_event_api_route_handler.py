@@ -21,6 +21,7 @@ from src.presentation.api.sensor_events.schemas.sensor_event_create_schema impor
     SensorEventCreateSchema,
 )
 from src.presentation.api.sensor_events.schemas.sensor_event_schema import SensorEventSchema
+from src.monitoring.metrics import SENSOR_EVENTS_PROCESSED
 
 logger = setup_logging()
 
@@ -87,4 +88,6 @@ class SensorEventApiRouteHandler:
                 'Sensor event create success',
                 extra={'extra': {'device_id': str(sensor_event.id)}},
             )
+            SENSOR_EVENTS_PROCESSED.inc()
+
             return SensorEventSchema.from_entity(sensor_event)
