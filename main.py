@@ -8,20 +8,22 @@ from fastapi import FastAPI
 
 from src.core.config import settings
 from src.infrastructure.di.container import create_container
-from src.infrastructure.mongodb import init_mongo
+from src.infrastructure.di.providers.mongo_providers import BeanieInitializer
+from src.monitoring.middleware import PrometheusMiddleware
 from src.presentation.api.alerts.handlers.alert_api_route_handler import AlertApiRouteHandler
 from src.presentation.api.devices.handlers.device_api_route_handler import DeviceApiRouteHandler
+from src.presentation.api.monitoring.handlers import router as monitoring_router
 from src.presentation.api.sensor_events.handlers.sensor_event_api_route_handler import (
     SensorEventApiRouteHandler,
 )
-from src.monitoring.middleware import PrometheusMiddleware
-from src.presentation.api.monitoring.handlers import router as monitoring_router
+
+container = create_container()
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncGenerator[None, Any]:
-    client = await init_mongo()
+    await container.get(BeanieInitializer)
     yield
-    client.close()
 
 
 app = FastAPI(
@@ -33,7 +35,6 @@ app = FastAPI(
 
 app.add_middleware(PrometheusMiddleware)
 
-container = create_container()
 setup_dishka(container=container, app=app)
 
 # Routers

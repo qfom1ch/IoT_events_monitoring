@@ -12,6 +12,7 @@ dependencies = [
     "dishka[fastapi]>=1.6.0",
     "elasticsearch[async]==8.13.0",
     "fastapi>=0.115.12",
+    "httpx>=0.28.1",
     "motor>=3.7.1",
     "prometheus-client>=0.22.1",
     "pydantic-settings>=2.9.1",
@@ -22,6 +23,8 @@ dependencies = [
 [tool.uv]
 dev-dependencies = [
     "mypy>=1.16.0",
+    "pytest-asyncio>=1.1.0",
+    "pytest>=8.4.2",
     "ruff>=0.11.13",
 ]
 
@@ -106,3 +109,8 @@ disable_error_code = [
     "no-redef", "valid-type", "attr-defined", "type-arg", "var-annotated",
     "no-untyped-def", "no-untyped-call", "name-defined", "used-before-def"
 ]
+
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"

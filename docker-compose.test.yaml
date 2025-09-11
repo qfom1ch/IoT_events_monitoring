@@ -1,0 +1,16 @@
+version: '3.3'
+
+services:
+  mongo-test:
+    image: mongo:6.0.4
+    container_name: my-mongo-test
+    ports:
+      - "27018:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: test_admin
+      MONGO_INITDB_ROOT_PASSWORD: test_pass
+    volumes:
+      - mongo_test_data:/data/db
+
+volumes:
+  mongo_test_data:

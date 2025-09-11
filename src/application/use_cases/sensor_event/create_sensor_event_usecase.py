@@ -1,4 +1,4 @@
-from abc import abstractmethod
+from abc import ABC, abstractmethod
 from typing import Any
 from uuid import UUID
 
@@ -7,7 +7,7 @@ from src.domain.sensor_events.entities.sensor_event import SensorEvent
 from src.domain.sensor_events.interfaces.sensor_event_repo import SensorEventRepository
 
 
-class CreateSensorEventUseCase:
+class CreateSensorEventUseCase(ABC):
     @abstractmethod
     async def execute(
         self,

@@ -14,6 +14,7 @@ from src.domain.sensor_events.exceptions.sensor_event_not_found_error import (
     SensorEventNotFoundError,
 )
 from src.domain.sensor_events.value_objects.sensor_event_id import SensorEventId
+from src.monitoring.metrics import SENSOR_EVENTS_PROCESSED
 from src.presentation.api.sensor_events.error_messages.sensor_event_not_found_error_message import (  # noqa: E501
     ErrorMessageSensorEventNotFound,
 )
@@ -21,7 +22,6 @@ from src.presentation.api.sensor_events.schemas.sensor_event_create_schema impor
     SensorEventCreateSchema,
 )
 from src.presentation.api.sensor_events.schemas.sensor_event_schema import SensorEventSchema
-from src.monitoring.metrics import SENSOR_EVENTS_PROCESSED
 
 logger = setup_logging()
 

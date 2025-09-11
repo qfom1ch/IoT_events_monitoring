@@ -11,12 +11,12 @@ from src.core.logging_config import setup_logging
 from src.domain.alerts.exceptions.alert_not_found_error import AlertNotFoundError
 from src.domain.alerts.value_objects.alert_id import AlertId
 from src.infrastructure.elastic.alerts.schemas import AlertSearchQuery
+from src.monitoring.metrics import ALERTS_GENERATED
 from src.presentation.api.alerts.error_messages.alert_not_found_error_message import (
     ErrorMessageAlertNotFound,
 )
 from src.presentation.api.alerts.schemas.alert_create_schema import AlertCreateSchema
 from src.presentation.api.alerts.schemas.alert_schema import AlertSchema
-from src.monitoring.metrics import ALERTS_GENERATED
 
 logger = setup_logging()
 

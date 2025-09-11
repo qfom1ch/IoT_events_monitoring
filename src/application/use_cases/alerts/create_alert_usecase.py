@@ -1,4 +1,4 @@
-from abc import abstractmethod
+from abc import ABC, abstractmethod
 from uuid import UUID
 
 from src.domain.alerts.entities.alert import Alert, AlertSeverity
@@ -6,7 +6,7 @@ from src.domain.alerts.interfaces.alert_repo import AlertRepository
 from src.domain.alerts.interfaces.alert_search_repo import AlertSearchRepo
 
 
-class CreateAlertUseCase:
+class CreateAlertUseCase(ABC):
     @abstractmethod
     async def execute(
         self, event_id: UUID, device_id: UUID, message: str, severity: AlertSeverity

@@ -1,11 +1,11 @@
-from abc import abstractmethod
+from abc import ABC, abstractmethod
 
 from src.domain.devices.entities.device import Device
 from src.domain.devices.interfaces.device_repo import DeviceRepository
 from src.domain.enums import SensorType
 
 
-class CreateDeviceUseCase:
+class CreateDeviceUseCase(ABC):
     @abstractmethod
     async def execute(self, name: str, location: str, sensor_type: SensorType) -> Device: ...
 

@@ -37,3 +37,19 @@ class Settings(BaseSettings):
 
 
 settings = Settings()
+
+
+class TestSettings(Settings):
+    DATABASE_NAME: str = 'test_database'
+    MONGO_URI: str = os.environ.get(
+        'TEST_MONGO_URI', 'mongodb://test_admin:test_pass@localhost:27018'
+    )
+
+    DEBUG: bool = True
+
+    model_config = SettingsConfigDict(
+        env_file='.env.test', case_sensitive=False, extra='ignore'
+    )
+
+
+test_settings = TestSettings()
