@@ -27,8 +27,8 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, Any]:
 
 
 app = FastAPI(
-    title='DDD iot monitoring API',
-    description='A RESTful API for iot monitoring using Domain-Driven Design principles.',
+    title='Iot monitoring API',
+    description='API for iot monitoring',
     version='1.0.0',
     lifespan=lifespan,
 )

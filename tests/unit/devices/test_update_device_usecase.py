@@ -5,7 +5,9 @@ from src.domain.enums import SensorType
 
 
 @pytest.mark.asyncio
-async def test_update_device_name_only(update_device_usecase, device_repository_mock, device) -> None:
+async def test_update_device_name_only(
+    update_device_usecase, device_repository_mock, device
+) -> None:
     # Arrange
     device_repository_mock.find_by_id.return_value = device
     name = 'ChangedName'
@@ -40,7 +42,9 @@ async def test_update_device_sensor_type_only(
 
 
 @pytest.mark.asyncio
-async def test_update_device_all_fields(update_device_usecase, device_repository_mock, device) -> None:
+async def test_update_device_all_fields(
+    update_device_usecase, device_repository_mock, device
+) -> None:
     # Arrange
     device_repository_mock.find_by_id.return_value = device
     new_name = 'ChangedName'

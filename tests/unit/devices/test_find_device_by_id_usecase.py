@@ -19,7 +19,9 @@ async def test_find_device_by_id_success(
 
 
 @pytest.mark.asyncio
-async def test_find_device_by_id_not_found(find_device_by_id_usecase, device_repository_mock) -> None:
+async def test_find_device_by_id_not_found(
+    find_device_by_id_usecase, device_repository_mock
+) -> None:
     # Arrange
     device_id = DeviceId.generate()
     device_repository_mock.find_by_id.return_value = None

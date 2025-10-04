@@ -4,7 +4,9 @@ from src.domain.devices.value_objects.device_id import DeviceId
 
 
 @pytest.mark.asyncio
-async def test_delete_device_success(delete_device_usecase, device_repository_mock, device) -> None:
+async def test_delete_device_success(
+    delete_device_usecase, device_repository_mock, device
+) -> None:
     # Arrange
     device_repository_mock.find_by_id.return_value = device
 
